@@ -49,7 +49,7 @@ def event(data, wallet):
                 #     output.append(f" - {key}: {value}")
             if is_valid:
                 if is_sender:
-                    return ( f"""📫 MantraBot Notification 📫
+                    return (f"""📫 MantraBot Notification 📫
 
 💸 You sent {amount} to {receiver} 💸"""
                     )
