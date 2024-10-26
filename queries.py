@@ -159,7 +159,7 @@ async def query_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         logger.error(e)
         await update.message.reply_text("Sorry, we couldnt reach the server right now. Please try again later.")
         return
-    
+
     if not account_resp.data.account:
         await update.message.reply_text(
             "Account not found. Send a transaction to create it."
@@ -174,4 +174,8 @@ async def query_address(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     if not address:
         await update.message.reply_text("No account registered for your user.")
     else:
-        await update.message.reply_text(address)
+        html_message = f"""Your wallet address:
+📪 <a href="https://explorer.mantrachain.io/MANTRA-Dukong/account/{address}">{address}</a> 📪
+"""
+
+        await update.message.reply_text(html_message, parse_mode="HTML")
