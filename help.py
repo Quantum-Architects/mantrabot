@@ -49,15 +49,16 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await queries.query_address(update, context)
     elif query.data == 'fundme':
         await txns.fund_user(update, context)
-    elif  query.data == 'follow':
+    elif query.data == 'follow':
         await main.follow(update, context)
-    elif  query.data == 'balance':
+    elif query.data == 'balance':
         await queries.query_balance(update, context)
     elif query.data == 'guide':
         await show_guide(update, context)
 
-async def show_guide(update: Update, context : ContextTypes.DEFAULT_TYPE) -> None:
-    html_message =f"""🤖 Welcome to MantraBot! 🤖
+
+async def show_guide(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    html_message ="""🤖 Welcome to MantraBot! 🤖
 
     You can send a coin to a friend by using the command:
     <code>/send friend_handle 1</code>

@@ -1,4 +1,5 @@
-"""{'events': [{'type': 'message', 'attributes': [{'key': 'action', 'value': '/cosmos.bank.v1beta1.MsgSend', 'index': True}, {'key': 'sender', 'value': 'mantra1nagtgts4y4s3d08ykqe0vsd68l53gnlujms9zj', 'index': True}, {'key': 'module', 'value': 'bank', 'index': True}, {'key': 'msg_index', 'value': '0', 'index': True}]}]}"""
+"""{'events': [{'type': 'message', 'attributes': [{'key': 'action', 'value': '/cosmos.bank.v1beta1.MsgSend', 'index': True}, {'key': 'sender', 'value': 'mantra1nagtgts4y4s3d08ykqe0vsd68l53gnlujms9zj', 'index': True}, {'key': 'module', 'value': 'bank', 'index': True}, {'key': 'msg_index', 'value': '0', 'index': True}]}]}""" # noqa: E501
+
 
 def event(data, wallet):
     output = []
@@ -22,7 +23,7 @@ def event(data, wallet):
             for attr in event.get('attributes', []):
                 key = attr.get('key', 'Unknown').replace('_', ' ').capitalize()
                 value = attr.get('value', 'N/A')
-                if value =='mantra13pxn9n3qw79e03844rdadagmg0nshmwf4txc8r':
+                if value == 'mantra13pxn9n3qw79e03844rdadagmg0nshmwf4txc8r':
                     # Ingnore the fee module account
                     is_valid = False
                     continue
@@ -48,16 +49,13 @@ def event(data, wallet):
                 #     output.append(f" - {key}: {value}")
             if is_valid:
                 if is_sender:
-                    return( f"""📫 MantraBot Notification 📫
+                    return ( f"""📫 MantraBot Notification 📫
 
-💸 You sent {amount} to {receiver} 💸"""
-                    )
+💸 You sent {amount} to {receiver} 💸""")
                 else:
-                    return( f"""📫 MantraBot Notification 📫
+                    return (f"""📫 MantraBot Notification 📫
 
-🤑 You got {amount} from {sender} 🤑"""
-                    )
+🤑 You got {amount} from {sender} 🤑""")
             output.append('')  # Add a line break between events
-
 
     return '\n'.join(output)

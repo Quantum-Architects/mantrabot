@@ -8,15 +8,10 @@ import requests
 import uvicorn
 from mantrapy.client.client import Client
 from mantrapy.constants.constants import Constants
-from mantrapy.wallet import wallet
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import PlainTextResponse
-from starlette.responses import Response
 from starlette.routing import Route
-from telegram import ForceReply
-from telegram import InlineKeyboardButton
-from telegram import InlineKeyboardMarkup
 from telegram import Update
 from telegram.ext import Application
 from telegram.ext import CallbackContext
@@ -24,8 +19,6 @@ from telegram.ext import CallbackQueryHandler
 from telegram.ext import CommandHandler
 from telegram.ext import ContextTypes
 from telegram.ext import ExtBot
-from telegram.ext import filters
-from telegram.ext import MessageHandler
 from telegram.ext import TypeHandler
 
 import help
@@ -54,6 +47,7 @@ class WebhookUpdate:
     """Simple dataclass to wrap a custom update type"""
     events: str
 
+
 class CustomContext(CallbackContext[ExtBot, dict, dict, dict]):
     """
     Custom CallbackContext class that makes `user_data` available for updates of type
@@ -69,6 +63,7 @@ class CustomContext(CallbackContext[ExtBot, dict, dict, dict]):
             return cls(application=application, user_id=update.user_id)
         return super().from_update(update, application)
 
+
 async def subscribe_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # address = users.get_address(update.effective_user.id)
     # if not address:
@@ -81,6 +76,7 @@ async def subscribe_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         users.register_webhook(response['hook_id'], update.effective_user.username, update.effective_chat.id)
     print(response)
     logger.info(rf"User {update.effective_user.username} subscribed to {response['hook_id']}")
+
 
 async def follow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     address = users.get_address(update.effective_user.username)
