@@ -99,8 +99,10 @@ async def follow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def webhook_update(update: WebhookUpdate, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Handle custom updates."""
-    humanized = humanize.event(update.events)
-    _, id = users.get_user_by_hook(update.events["hook_id"])
+    username, id = users.get_user_by_hook(update.events["hook_id"])
+    # TODO: get wallet
+    addr = users.get_address(username)
+    humanized = humanize.event(update.events,addr)
     print(update.events)
     print(humanized)
     await context.bot.send_message(chat_id=int(id), text=humanized)
