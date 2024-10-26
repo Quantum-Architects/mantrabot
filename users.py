@@ -2,31 +2,119 @@ import json
 import sqlite3
 from cosmospy import privkey_to_pubkey, Transaction
 
-db = {}
+# Initialize a global connection to the SQLite database
+DATABASE = "users.db"
 
-# {
-#     "seed": "arch skill acquire abuse frown reject front second album pizza hill slogan guess random wonder benefit industry custom green ill moral daring glow elevator",
-#     "derivation_path": "m/44'/118'/0'/0/0",
-#     "private_key": b"\xbb\xec^\xf6\xdcg\xe6\xb5\x89\xed\x8cG\x05\x03\xdf0:\xc9\x8b \x85\x8a\x14\x12\xd7\xa6a\x01\xcd\xf8\x88\x93",
-#     "public_key": b"\x03h\x1d\xae\xa7\x9eO\x8e\xc5\xff\xa3sAw\xe6\xdd\xc9\xb8b\x06\x0eo\xc5a%z\xe3\xff\x1e\xd2\x8e5\xe7",
-#     "address": "cosmos1uuhna3psjqfxnw4msrfzsr0g08yuyfxeht0qfh",
-# }
+# Function to save a wallet in the database
+def save_wallet(user_id: str, wallet: dict) -> None:
+    wallet_data = (
+        user_id,
+        wallet["private_key"].hex(),
+        wallet["public_key"].hex(),
+        wallet["address"],
+    )
 
-# privkey = bytes.fromhex(
-#     "6dcd05d7ac71e09d3cf7da666709ebd59362486ff9e99db0e8bc663570515afa"
-# )
-# pubkey = privkey_to_pubkey(privkey)
+    try:
+        with sqlite3.connect(DATABASE) as con:
+            cur = con.cursor()
+            cur.execute(
+                "INSERT INTO users (id, pk, public, address) VALUES (?, ?, ?, ?)",
+                wallet_data,
+            )
+            con.commit()
+            print(f"Wallet for user {user_id} saved successfully.")
+    except sqlite3.Error as e:
+        print(f"Failed to save wallet for user {user_id}: {e}")
 
-def save_wallet(user : str, wallet:dict) -> None:
-    db[user] = wallet
-    return
 
-def get_address(user : str) -> str:
-    if user not in db:
+# Function to retrieve a user's address from the database
+def get_address(user_id: str) -> str:
+    try:
+        with sqlite3.connect(DATABASE) as con:
+            cur = con.cursor()
+            cur.execute("SELECT address FROM users WHERE id = ?", (user_id,))
+            result = cur.fetchone()
+            if result:
+                return result[0]
+            else:
+                print(f"No address found for user {user_id}.")
+                return ""
+    except sqlite3.Error as e:
+        print(f"Failed to retrieve address for user {user_id}: {e}")
         return ""
-    
-    return db[user]["address"]
 
+
+# Function to forcefully create/reset the database
+def force_create_db() -> None:
+    try:
+        with sqlite3.connect(DATABASE) as con:
+            cur = con.cursor()
+            cur.execute("DROP TABLE IF EXISTS users")
+            cur.execute("DROP TABLE IF EXISTS subscriptions")
+            cur.execute(
+                "CREATE TABLE users (id TEXT PRIMARY KEY, pk TEXT, public TEXT, address TEXT)"
+            )
+            cur.execute(
+                "CREATE TABLE subscriptions (id TEXT PRIMARY KEY, username TEXT, user_id TEXT)"
+            )
+            con.commit()
+            print("Database reset successfully.")
+    except sqlite3.Error as e:
+        print(f"Failed to reset database: {e}")
+
+
+# Function to create the database if it does not already exist
+def create_db() -> None:
+    try:
+        with sqlite3.connect(DATABASE) as con:
+            cur = con.cursor()
+            cur.execute(
+                "CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, pk TEXT, public TEXT, address TEXT)"
+            )
+            cur.execute(
+                "CREATE TABLE IF NOT EXISTS subscriptions (id TEXT PRIMARY KEY, username TEXT, user_id TEXT)"
+            )
+            con.commit()
+            print("Database checked/created successfully.")
+    except sqlite3.Error as e:
+        print(f"Failed to create database: {e}")
+
+
+def register_webhook(hook:str, username: str, user_id:str) -> None:
+    #036c4464-5273-4bdb-89d6-9e97325b69fe
+    webhook_data = (
+        hook,
+        username,
+        user_id,
+    )
+
+    try:
+        with sqlite3.connect(DATABASE) as con:
+            cur = con.cursor()
+            cur.execute(
+                "INSERT INTO subscriptions (id, username, user_id) VALUES (?, ?, ?)",
+                webhook_data,
+            )
+            con.commit()
+            print(f"User {user_id} registered to a new event.")
+    except sqlite3.Error as e:
+        print(f"Failed to register hook to user {user_id}: {e}")
+
+def get_user_by_hook(hook:str) -> None:
+    try:
+        with sqlite3.connect(DATABASE) as con:
+            cur = con.cursor()
+            cur.execute("SELECT username, user_id FROM subscriptions WHERE id = ?", (hook,))
+            result = cur.fetchone()
+            print(result)
+            if result:
+                return result
+            else:
+                print(f"No user is listening to {hook}.")
+                return ""
+    except sqlite3.Error as e:
+        print(f"Failed to retrieve user for hook {hook}: {e}")
+        return ""
 
 # tx = Transaction(
 #     privkey=bytes.fromhex(
