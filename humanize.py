@@ -9,35 +9,35 @@ def event(data, wallet):
     # Process each event generically
     for event in data.get('events', []):
         event_type = event.get('type', 'Unknown')
-        output.append(f"Event Type: {event_type.capitalize()}")
+        output.append(f'Event Type: {event_type.capitalize()}')
 
         # We only care about transfer
         if event_type.capitalize() == 'Transfer':
             is_sender = True
-            sender = ""
-            receiver = ""
+            sender = ''
+            receiver = ''
             amount = 0
             is_valid = True
             # Process each attribute in the event
             for attr in event.get('attributes', []):
                 key = attr.get('key', 'Unknown').replace('_', ' ').capitalize()
                 value = attr.get('value', 'N/A')
-                if value =="mantra13pxn9n3qw79e03844rdadagmg0nshmwf4txc8r":
+                if value =='mantra13pxn9n3qw79e03844rdadagmg0nshmwf4txc8r':
                     # Ingnore the fee module account
                     is_valid = False
                     continue
 
                 if value == wallet:
                     # This is the user wallet
-                    if key == "Recipient":
+                    if key == 'Recipient':
                         is_sender = False
 
-                if key == "Recipient":
+                if key == 'Recipient':
                     receiver = value
-                if key == "Sender":
+                if key == 'Sender':
                     sender = value
 
-                if key == "Amount":
+                if key == 'Amount':
                     amount = value
 
                 # # Special case for action key to extract transaction type if present
@@ -50,12 +50,14 @@ def event(data, wallet):
                 if is_sender:
                     return( f"""📫 MantraBot Notification 📫
 
-💸 You sent {amount} to {receiver} 💸""")
+💸 You sent {amount} to {receiver} 💸"""
+                    )
                 else:
                     return( f"""📫 MantraBot Notification 📫
 
-🤑 You got {amount} from {sender} 🤑""")
-            output.append("")  # Add a line break between events
+🤑 You got {amount} from {sender} 🤑"""
+                    )
+            output.append('')  # Add a line break between events
 
 
-    return "\n".join(output)
+    return '\n'.join(output)

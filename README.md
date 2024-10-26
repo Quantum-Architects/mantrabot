@@ -23,4 +23,3 @@ You will also need the `MantraPy` webhooks server to handle push notifications t
    pip install -r requirements.txt
    fastapi dev mantrapy/server/main.py
    ```
-
