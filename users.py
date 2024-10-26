@@ -1,24 +1,25 @@
 import json
 import sqlite3
 from cosmospy import privkey_to_pubkey, Transaction
+from mantrapy.wallet.wallet import Wallet
 
 # Initialize a global connection to the SQLite database
 DATABASE = "users.db"
 
 # Function to save a wallet in the database
-def save_wallet(user_id: str, wallet: dict) -> None:
+def save_wallet(user_id: str, wallet: Wallet) -> None:
     wallet_data = (
         user_id,
-        wallet["private_key"].hex(),
-        wallet["public_key"].hex(),
-        wallet["address"],
+        wallet.mnemonic,
+        wallet.privkey,
+        wallet.address,
     )
 
     try:
         with sqlite3.connect(DATABASE) as con:
             cur = con.cursor()
             cur.execute(
-                "INSERT INTO users (id, pk, public, address) VALUES (?, ?, ?, ?)",
+                "INSERT INTO users (id, mnemonic , pk, address) VALUES (?, ?, ?, ?)",
                 wallet_data,
             )
             con.commit()
@@ -43,6 +44,22 @@ def get_address(user_id: str) -> str:
         print(f"Failed to retrieve address for user {user_id}: {e}")
         return ""
 
+# Function to retrieve a user's address from the database
+def get_wallet(user_id: str) -> str:
+    try:
+        with sqlite3.connect(DATABASE) as con:
+            cur = con.cursor()
+            cur.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+            result = cur.fetchone()
+            if result:
+                return result
+            else:
+                print(f"No address found for user {user_id}.")
+                return ""
+    except sqlite3.Error as e:
+        print(f"Failed to retrieve address for user {user_id}: {e}")
+        return ""
+
 
 # Function to forcefully create/reset the database
 def force_create_db() -> None:
@@ -52,7 +69,7 @@ def force_create_db() -> None:
             cur.execute("DROP TABLE IF EXISTS users")
             cur.execute("DROP TABLE IF EXISTS subscriptions")
             cur.execute(
-                "CREATE TABLE users (id TEXT PRIMARY KEY, pk TEXT, public TEXT, address TEXT)"
+                "CREATE TABLE users (id TEXT PRIMARY KEY, mnemonic TEXT, pk TEXT, address TEXT)"
             )
             cur.execute(
                 "CREATE TABLE subscriptions (id TEXT PRIMARY KEY, username TEXT, user_id TEXT)"
@@ -69,7 +86,7 @@ def create_db() -> None:
         with sqlite3.connect(DATABASE) as con:
             cur = con.cursor()
             cur.execute(
-                "CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, pk TEXT, public TEXT, address TEXT)"
+                "CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, mnemonic TEXT, pk TEXT, address TEXT)"
             )
             cur.execute(
                 "CREATE TABLE IF NOT EXISTS subscriptions (id TEXT PRIMARY KEY, username TEXT, user_id TEXT)"
