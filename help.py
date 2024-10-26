@@ -23,6 +23,7 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         [InlineKeyboardButton("Notify me!", callback_data="follow")],
         [InlineKeyboardButton("What's my balance?", callback_data="balance")],
         [InlineKeyboardButton("I need some money!", callback_data="fundme")],
+        [InlineKeyboardButton("How do I interact with other users?", callback_data="guide")],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -45,4 +46,15 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         await main.follow(update, context)
     elif  query.data == "balance":
         await queries.query_balance(update, context)
+    elif query.data == "guide":
+        await show_guide(update, context)
 
+async def show_guide(update: Update, context : ContextTypes.DEFAULT_TYPE) -> None:
+    html_message =f"""🤖 Welcome to MantraBot! 🤖
+
+    You can send a coin to a friend by using the command:
+    `/send friend_handle 1`
+
+    🙏 Make sure your friend has interacted with MantraBot first so we can recognize them! 🙏
+    """
+    await context.bot.send_message(update.effective_user.id, html_message, parse_mode="HTML")
