@@ -36,7 +36,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Some clients may have trouble otherwise. See https://core.telegram.org/bots/api#callbackquery
     # await query.answer()
     print(query.data)
-    await query.edit_message_text(text=f"Selected option: {query.data}")
+    # await query.edit_message_text(text=f"Selected option: {query.data}")
     if query.data == "address":
         await queries.query_address(update, context)
     elif query.data == "fundme":
