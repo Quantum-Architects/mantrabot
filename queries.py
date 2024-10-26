@@ -21,7 +21,6 @@ logging.getLogger('httpx').setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 
-
 # Define a few command handlers. These usually take the two arguments update and
 # context.
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -98,7 +97,7 @@ async def query_block(update: Update, context: ContextTypes.DEFAULT_TYPE) -> Non
         return
     try:
         await query_block_by_height(update, context)
-    except Exception as e:
+    except Exception:
         await query_block_by_hash(update, context)
 
 
@@ -124,7 +123,7 @@ async def query_balance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     else:
         balance = '💰 Your balance 💰 \n\n'
         for c in balances_resp.data.balances:
-            balance+=f'\t 💵 {c.amount} {c.denom}\n'
+            balance += f'\t 💵 {c.amount} {c.denom}\n'
         await context.bot.send_message(update.effective_user.id, balance)
 
 

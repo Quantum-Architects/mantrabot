@@ -1,4 +1,3 @@
-import json
 import logging
 
 from mantrapy.client.client import Client
@@ -34,7 +33,7 @@ async def send_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     w = wallet.wallet_from_mnemonic(mnemonic)
 
     if not context.args:
-        #TODO error handle
+        await context.bot.send_message(update.effective_user.id, '❌ Arguments are missing ❌')
         return
     if len(context.args) != 2:
         return
@@ -46,13 +45,12 @@ async def send_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
             await context.bot.send_message(update.effective_user.id, '❌ The receiver is not registered. ❌')
             return
         receiver = wallet.wallet_from_mnemonic(mnemonic2)
-    except:
+    except Exception:
         return
     try:
         amount = int(context.args[1])
-    except:
+    except Exception:
         return
-
 
     try:
         builder = TxBuilder(w, is_testnet=True)
@@ -63,10 +61,11 @@ async def send_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 📩 TxHash: <a href="https://explorer.mantrachain.io/MANTRA-Dukong/tx/{resp['tx_response']['txhash']}">{resp['tx_response']['txhash']}</a>
 """
         await context.bot.send_message(update.effective_user.id, html_message, parse_mode='HTML')
-    except:
+    except Exception:
         await context.bot.send_message(update.effective_user.id, '❌ Error sending the transaction. ❌')
 
     return
+
 
 async def fund_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     _, mnemonic, _, address = users.get_wallet(update.effective_user.username)

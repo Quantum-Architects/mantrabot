@@ -1,12 +1,10 @@
-import json
 import sqlite3
 
-from cosmospy import privkey_to_pubkey
-from cosmospy import Transaction
 from mantrapy.wallet.wallet import Wallet
 
 # Initialize a global connection to the SQLite database
 DATABASE = 'users.db'
+
 
 # Function to save a wallet in the database
 def save_wallet(user_id: str, wallet: Wallet) -> None:
@@ -45,6 +43,7 @@ def get_address(user_id: str) -> str:
     except sqlite3.Error as e:
         print(f'Failed to retrieve address for user {user_id}: {e}')
         return ''
+
 
 # Function to retrieve a user's address from the database
 def get_wallet(user_id: str) -> str:
@@ -99,8 +98,8 @@ def create_db() -> None:
         print(f'Failed to create database: {e}')
 
 
-def register_webhook(hook:str, username: str, user_id:str) -> None:
-    #036c4464-5273-4bdb-89d6-9e97325b69fe
+def register_webhook(hook: str, username: str, user_id: str) -> None:
+    # 036c4464-5273-4bdb-89d6-9e97325b69fe
     webhook_data = (
         hook,
         username,
@@ -119,7 +118,8 @@ def register_webhook(hook:str, username: str, user_id:str) -> None:
     except sqlite3.Error as e:
         print(f'Failed to register hook to user {user_id}: {e}')
 
-def get_user_by_hook(hook:str) -> None:
+
+def get_user_by_hook(hook: str) -> None:
     try:
         with sqlite3.connect(DATABASE) as con:
             cur = con.cursor()
