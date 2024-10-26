@@ -142,13 +142,13 @@ async def query_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     """Query the user's account details."""
     address = users.get_address(update.effective_user.username)
     if not address:
-        await update.message.reply_text("No account registered for your user.")
+        await update.message.reply_text("❌ No account registered for your user. ❌")
         return
     try:
         account_resp = querier.get_account(address)
         if account_resp.status_code == 404:
             await update.message.reply_text(
-            "Account not found. Send a transaction to create it."
+            "❌ Account not found. Send a transaction to create it. ❌"
             )
             return
         if account_resp.status_code != 200:
@@ -157,12 +157,12 @@ async def query_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
             return
     except Exception as e:
         logger.error(e)
-        await update.message.reply_text("Sorry, we couldnt reach the server right now. Please try again later.")
+        await update.message.reply_text("❌ Sorry, we couldnt reach the server right now. Please try again later. ❌")
         return
 
     if not account_resp.data.account:
         await update.message.reply_text(
-            "Account not found. Send a transaction to create it."
+            "❌ Account not found. Send a transaction to create it. ❌"
         )
     else:
         await update.message.reply_text(json.dumps(account_resp.data.account, indent=2))
@@ -172,7 +172,7 @@ async def query_address(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     """Query the user's address."""
     address = users.get_address(update.effective_user.username)
     if not address:
-        await update.message.reply_text("No account registered for your user.")
+        await update.message.reply_text("❌ No account registered for your user ❌")
     else:
         html_message = f"""Your wallet address:
 📪 <a href="https://explorer.mantrachain.io/MANTRA-Dukong/account/{address}">{address}</a> 📪
