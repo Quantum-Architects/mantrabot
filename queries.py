@@ -111,7 +111,7 @@ async def query_balance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     """Query the user's balance."""
     address = users.get_address(update.effective_user.username)
     if not address:
-        await context.bot.send_message(update.effective_user.id, "❌  No account registered for your user. ❌")
+        await context.bot.send_message(update.effective_user.id, "❌ No account registered for your user, please type /start first ❌")
         return
 
     try:
@@ -137,7 +137,7 @@ async def query_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     """Query the user's account details."""
     address = users.get_address(update.effective_user.username)
     if not address:
-        await context.bot.send_message(update.effective_user.id, "❌ No account registered for your user. ❌")
+        await context.bot.send_message(update.effective_user.id, "❌ No account registered for your user, please type /start first ❌")
         return
     try:
         account_resp = querier.get_account(address)

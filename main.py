@@ -101,6 +101,8 @@ async def webhook_update(update: WebhookUpdate, context: ContextTypes.DEFAULT_TY
     """Handle custom updates."""
     humanized = humanize.event(update.events)
     _, id = users.get_user_by_hook(update.events["hook_id"])
+    print(update.events)
+    print(humanized)
     await context.bot.send_message(chat_id=int(id), text=humanized)
 
 async def start_bot():
