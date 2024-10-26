@@ -4,19 +4,8 @@ import logging
 from mantrapy.client.client import Client
 from mantrapy.constants.constants import Constants
 from mantrapy.wallet import wallet
-from telegram import ForceReply
-from telegram import InlineKeyboardButton
-from telegram import InlineKeyboardMarkup
 from telegram import Update
-from telegram.ext import Application
-from telegram.ext import CallbackContext
-from telegram.ext import CallbackQueryHandler
-from telegram.ext import CommandHandler
 from telegram.ext import ContextTypes
-from telegram.ext import ExtBot
-from telegram.ext import filters
-from telegram.ext import MessageHandler
-from telegram.ext import TypeHandler
 
 import users
 

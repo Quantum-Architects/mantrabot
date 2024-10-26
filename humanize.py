@@ -1,4 +1,4 @@
-"""{'events': [{'type': 'message', 'attributes': [{'key': 'action', 'value': '/cosmos.bank.v1beta1.MsgSend', 'index': True}, {'key': 'sender', 'value': 'mantra1nagtgts4y4s3d08ykqe0vsd68l53gnlujms9zj', 'index': True}, {'key': 'module', 'value': 'bank', 'index': True}, {'key': 'msg_index', 'value': '0', 'index': True}]}]}""" # noqa: E501
+"""{'events': [{'type': 'message', 'attributes': [{'key': 'action', 'value': '/cosmos.bank.v1beta1.MsgSend', 'index': True}, {'key': 'sender', 'value': 'mantra1nagtgts4y4s3d08ykqe0vsd68l53gnlujms9zj', 'index': True}, {'key': 'module', 'value': 'bank', 'index': True}, {'key': 'msg_index', 'value': '0', 'index': True}]}]}"""  # noqa
 
 
 def event(data, wallet):
@@ -51,7 +51,8 @@ def event(data, wallet):
                 if is_sender:
                     return ( f"""📫 MantraBot Notification 📫
 
-💸 You sent {amount} to {receiver} 💸""")
+💸 You sent {amount} to {receiver} 💸"""
+                    )
                 else:
                     return (f"""📫 MantraBot Notification 📫
 

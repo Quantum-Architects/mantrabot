@@ -58,7 +58,7 @@ async def button(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 async def show_guide(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    html_message ="""🤖 Welcome to MantraBot! 🤖
+    html_message = """🤖 Welcome to MantraBot! 🤖
 
     You can send a coin to a friend by using the command:
     <code>/send friend_handle 1</code>

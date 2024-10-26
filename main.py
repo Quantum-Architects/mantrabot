@@ -100,10 +100,11 @@ async def webhook_update(update: WebhookUpdate, context: ContextTypes.DEFAULT_TY
     username, id = users.get_user_by_hook(update.events['hook_id'])
     # TODO: get wallet
     addr = users.get_address(username)
-    humanized = humanize.event(update.events,addr)
+    humanized = humanize.event(update.events, addr)
     print(update.events)
     print(humanized)
     await context.bot.send_message(chat_id=int(id), text=humanized)
+
 
 async def start_bot():
     """Initialize and start the bot."""
@@ -113,6 +114,7 @@ async def start_bot():
         .token('7655436649:AAHgfubO5N4IfvvxNRT96Q5DTV7KS8b7CAA')
         .build()
     )
+
     async def custom_update(req: Request) -> None:
         """Handle custom updates."""
         data = await req.json()
@@ -141,7 +143,7 @@ async def start_bot():
     application.add_handler(CommandHandler('fundme', txns.fund_user))
 
     # Webhooks
-    application.add_handler(TypeHandler(type=WebhookUpdate,callback=webhook_update))
+    application.add_handler(TypeHandler(type=WebhookUpdate, callback=webhook_update))
 
     # Run application and webserver together
     starlette_app = Starlette(
