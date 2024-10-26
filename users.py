@@ -73,7 +73,7 @@ def force_create_db() -> None:
                 'CREATE TABLE users (id TEXT PRIMARY KEY, mnemonic TEXT, pk TEXT, address TEXT)',
             )
             cur.execute(
-                'CREATE TABLE subscriptions (id TEXT PRIMARY KEY, username TEXT, user_id TEXT)',
+                'CREATE TABLE subscriptions (id TEXT PRIMARY KEY, username TEXT UNIQUE, user_id TEXT)',
             )
             con.commit()
             print('Database reset successfully.')
@@ -90,7 +90,7 @@ def create_db() -> None:
                 'CREATE TABLE IF NOT EXISTS users (id TEXT PRIMARY KEY, mnemonic TEXT, pk TEXT, address TEXT)',
             )
             cur.execute(
-                'CREATE TABLE IF NOT EXISTS subscriptions (id TEXT PRIMARY KEY, username TEXT, user_id TEXT)',
+                'CREATE TABLE IF NOT EXISTS subscriptions (id TEXT PRIMARY KEY, username TEXT UNIQUE, user_id TEXT)',
             )
             con.commit()
             print('Database checked/created successfully.')
