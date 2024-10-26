@@ -11,6 +11,7 @@ import requests
 import json
 import users
 import asyncio
+import help
 from dataclasses import dataclass
 from telegram import ForceReply, Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
@@ -69,7 +70,7 @@ class CustomContext(CallbackContext[ExtBot, dict, dict, dict]):
 async def subscribe_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # address = users.get_address(update.effective_user.id)
     # if not address:
-    #     await update.message.reply_text("No account registered for your user.")
+    #     await context.bot.send_message(update.effective_user.id, "No account registered for your user.")
     data = '{"url":"http://127.0.0.1:8010", "query": "module=staking"}'
     msg = requests.post(WEBHOOKS, data=data)
     
@@ -82,7 +83,7 @@ async def subscribe_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
 async def follow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     address = users.get_address(update.effective_user.username)
     if not address:
-        await update.message.reply_text("No account registered for your user.")
+        await context.bot.send_message(update.effective_user.id, "No account registered for your user.")
     
     data = '{"url":"http://127.0.0.1:8010", "query": "type=transfer&value='+address+'"}'
     print(data)
@@ -93,6 +94,7 @@ async def follow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         users.register_webhook(response["hook_id"], update.effective_user.username, update.effective_chat.id)
     print(response)
     logger.info(rf"User {update.effective_user.username} subscribed to {response['hook_id']}")
+    await context.bot.send_message(update.effective_user.id, "We will notify you when someone interacts with you!🚀")
 
 
 async def webhook_update(update: WebhookUpdate, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -117,7 +119,8 @@ async def start_bot():
 
     # on different commands - answer in Telegram
     application.add_handler(CommandHandler("start", queries.start))
-    application.add_handler(CommandHandler("help", queries.help_command))
+    application.add_handler(CommandHandler("help", help.help_command))
+    application.add_handler(CallbackQueryHandler(help.button))
     application.add_handler(CommandHandler("block", queries.query_block))
     application.add_handler(CommandHandler("balance", queries.query_balance))
     application.add_handler(CommandHandler("account", queries.query_account))

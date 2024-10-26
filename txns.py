@@ -27,7 +27,7 @@ TEST_MNEMONIC = 'anger pencil awful note doctor like slide muffin hungry keen ap
 async def send_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     _, mnemonic, _, _ = users.get_wallet(update.effective_user.username)
     if not mnemonic:
-        await update.message.reply_text("No account registered for your user.")
+        await context.bot.send_message(update.effective_user.id, "No account registered for your user.")
         return
     w = wallet.wallet_from_mnemonic(mnemonic)
 
@@ -41,7 +41,7 @@ async def send_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         handle = context.args[0]
         _, mnemonic2, _, _ = users.get_wallet(handle)
         if not mnemonic:
-            await update.message.reply_text("No account registered for your user.")
+            await context.bot.send_message(update.effective_user.id, "No account registered for your user.")
             return
         receiver = wallet.wallet_from_mnemonic(mnemonic2)
     except:
@@ -58,13 +58,13 @@ async def send_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     resp = builder.broadcast_tx(body, auth, builder.sign_message(sign_doc))
     # {"tx_response": {"height": "0", "txhash": "AA910D53270C2C2B55C949CDEBC2C28475DAFECC82600C071A29D5C516C9E2E8", "codespace": "", "code": 0, "data": "", "raw_log": "", "logs": [], "info": "", "gas_wanted": "0", "gas_used": "0", "tx": null, "timestamp": "", "events": []}}
     #TODO humanize this
-    await update.message.reply_text(resp)
+    await context.bot.send_message(update.effective_user.id, resp)
     return
 
 async def fund_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     _, mnemonic, _, address = users.get_wallet(update.effective_user.username)
     if not mnemonic:
-        await update.message.reply_text("No account registered for your user.")
+        await context.bot.send_message(update.effective_user.id, "No account registered for your user.")
         return
     w = wallet.wallet_from_mnemonic(TEST_MNEMONIC)
     builder = TxBuilder(w, is_testnet=True)
@@ -72,5 +72,5 @@ async def fund_user(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     #TODO add error handling
     resp = builder.broadcast_tx(body, auth, builder.sign_message(sign_doc))
     #TODO humanize this
-    await update.message.reply_text(resp)
+    await context.bot.send_message(update.effective_user.id, resp)
     return
