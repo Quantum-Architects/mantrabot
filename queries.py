@@ -65,7 +65,7 @@ async def query_block_by_height(
         await context.bot.send_message(update.effective_user.id, req.data.block)
     except Exception as e:
         logger.error(f"Failed to retrieve block by height: {e}")
-        await context.bot.send_message(update.effective_user.id, 
+        await context.bot.send_message(update.effective_user.id,
             "Error: Unable to connect to the server. Try again later."
         )
 
@@ -82,7 +82,7 @@ async def query_block_by_hash(
         req = querier.get_block_by_hash(block_hash)
         if req.status_code != 200:
             logger.error(req.error)
-            await context.bot.send_message(update.effective_user.id, 
+            await context.bot.send_message(update.effective_user.id,
             "Error: Unable to connect to the server. Try again later."
             )
             return
@@ -91,7 +91,7 @@ async def query_block_by_hash(
         await context.bot.send_message(update.effective_user.id, "Please provide a block hash.")
     except Exception as e:
         logger.error(f"Failed to retrieve block by hash: {e}")
-        await context.bot.send_message(update.effective_user.id, 
+        await context.bot.send_message(update.effective_user.id,
             "Error: Unable to connect to the server. Try again later."
         )
 
@@ -111,7 +111,7 @@ async def query_balance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     """Query the user's balance."""
     address = users.get_address(update.effective_user.username)
     if not address:
-        await context.bot.send_message(update.effective_user.id, "No account registered for your user.")
+        await context.bot.send_message(update.effective_user.id, "❌  No account registered for your user. ❌")
         return
 
     try:
@@ -122,15 +122,15 @@ async def query_balance(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
             return
     except Exception as e:
         logger.error(e)
-        await context.bot.send_message(update.effective_user.id, "Sorry, we couldnt reach the server right now. Please try again later.")
+        await context.bot.send_message(update.effective_user.id, "❌ Sorry, we couldnt reach the server right now. Please try again later. ❌")
         return
     if not balances_resp.data.balances:
-        await context.bot.send_message(update.effective_user.id, "You have no balance.")
+        await context.bot.send_message(update.effective_user.id, "You have no coins. 😞")
     else:
-        a = []
+        balance = "💰 Your balance 💰 \n\n"
         for c in balances_resp.data.balances:
-            a.append({c.denom : c.amount})
-        await context.bot.send_message(update.effective_user.id, json.dumps(a, indent=2))
+            balance+=f"\t 💵 {c.amount} {c.denom}\n"
+        await context.bot.send_message(update.effective_user.id, balance)
 
 
 async def query_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -142,7 +142,7 @@ async def query_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
     try:
         account_resp = querier.get_account(address)
         if account_resp.status_code == 404:
-            await context.bot.send_message(update.effective_user.id, 
+            await context.bot.send_message(update.effective_user.id,
             "❌ Account not found. Send a transaction to create it. ❌"
             )
             return
@@ -156,7 +156,7 @@ async def query_account(update: Update, context: ContextTypes.DEFAULT_TYPE) -> N
         return
 
     if not account_resp.data.account:
-        await context.bot.send_message(update.effective_user.id, 
+        await context.bot.send_message(update.effective_user.id,
             "❌ Account not found. Send a transaction to create it. ❌"
         )
     else:
