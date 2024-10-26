@@ -73,7 +73,7 @@ async def subscribe_to(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     #     await context.bot.send_message(update.effective_user.id, "No account registered for your user.")
     data = '{"url":"http://127.0.0.1:8010", "query": "module=staking"}'
     msg = requests.post(WEBHOOKS, data=data)
-    
+
     response = json.loads(msg.text)
     if msg.status_code == 200:
         users.register_webhook(response["hook_id"], update.effective_user.username, update.effective_chat.id)
@@ -84,7 +84,7 @@ async def follow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     address = users.get_address(update.effective_user.username)
     if not address:
         await context.bot.send_message(update.effective_user.id, "No account registered for your user.")
-    
+
     data = '{"url":"http://127.0.0.1:8010", "query": "type=transfer&value='+address+'"}'
     print(data)
     msg = requests.post(WEBHOOKS, data=data)
@@ -94,7 +94,7 @@ async def follow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         users.register_webhook(response["hook_id"], update.effective_user.username, update.effective_chat.id)
     print(response)
     logger.info(rf"User {update.effective_user.username} subscribed to {response['hook_id']}")
-    await context.bot.send_message(update.effective_user.id, "We will notify you when someone interacts with you!🚀")
+    await context.bot.send_message(update.effective_user.id, "🤖 I will notify you when someone interacts with your wallet! 🚀")
 
 
 async def webhook_update(update: WebhookUpdate, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -126,11 +126,11 @@ async def start_bot():
     application.add_handler(CommandHandler("account", queries.query_account))
     application.add_handler(CommandHandler("address", queries.query_address))
     application.add_handler(CommandHandler("whoami", queries.query_address))
-    
+
     application.add_handler(CommandHandler("subscribe", subscribe_to))
     application.add_handler(CommandHandler("follow", follow))
     # application.add_handler(CommandHandler("unsubscribe", subscribe_to))
-    
+
     # TODO delegation
     # application.add_handler(CommandHandler("delegation", get_delegation_total_rewards))
     # application.add_handler(CommandHandler("delegator_delegation", get_delegator_delegations))
@@ -138,7 +138,7 @@ async def start_bot():
     application.add_handler(CommandHandler("send", txns.send_to))
     application.add_handler(CommandHandler("fundme", txns.fund_user))
 
-    # Webhooks     
+    # Webhooks
     application.add_handler(TypeHandler(type=WebhookUpdate,callback=webhook_update))
 
     # Run application and webserver together
@@ -160,7 +160,7 @@ async def start_bot():
         await application.updater.start_polling()
         await webserver.serve()
         await application.close()
-    
+
 
 async def main() -> None:
     # Check if its necessary to create or reset the db
