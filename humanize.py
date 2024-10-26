@@ -1,6 +1,6 @@
 """{'events': [{'type': 'message', 'attributes': [{'key': 'action', 'value': '/cosmos.bank.v1beta1.MsgSend', 'index': True}, {'key': 'sender', 'value': 'mantra1nagtgts4y4s3d08ykqe0vsd68l53gnlujms9zj', 'index': True}, {'key': 'module', 'value': 'bank', 'index': True}, {'key': 'msg_index', 'value': '0', 'index': True}]}]}"""
 
-def humanize_event(data):
+def event(data):
     output = []
 
     # Extract and format general information

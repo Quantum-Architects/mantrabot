@@ -83,7 +83,9 @@ async def follow(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     address = users.get_address(update.effective_user.username)
     if not address:
         await update.message.reply_text("No account registered for your user.")
-    data = '{"url":"http://127.0.0.1:8010", "query": "module=bank&type=transfer&value='+address+'"}'
+    
+    data = '{"url":"http://127.0.0.1:8010", "query": "type=transfer&value='+address+'"}'
+    print(data)
     msg = requests.post(WEBHOOKS, data=data)
 
     response = json.loads(msg.text)
